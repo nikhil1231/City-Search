@@ -1,0 +1,200 @@
+@font-face {
+    font-family: roboto;
+    src: url(fonts/Roboto-Regular.ttf);
+}
+
+@font-face {
+    font-family: roboto_thin;
+    src: url(fonts/Roboto-Thin.ttf);
+}
+
+* {
+    font-family: 'Lato';
+    font-weight: 100;
+    padding: 0px;
+    margin: 0px;
+  }
+
+body{
+	overflow-x: hidden;
+	overflow-y: hidden;
+}h2{
+	font-size: 30px;
+}h3{
+	font-size: 25px;
+}
+
+/*body,ul{
+	*zoom:1;
+}
+body:before,body:after,ul:before,ul:after{
+	content:"";
+	display:table;
+}
+body:after,ul:after{
+	clear:both;
+}*/
+
+.col1,.col2,.col3,.col21{
+	float:left;
+	text-align: center;
+}
+
+.col1{
+	width: 32%;
+}
+.col2{
+	width: 63%;
+}
+.col3{
+	width: 100%;
+	height: auto;
+}
+
+.col21{
+	width: 50%;
+}
+
+
+#homepage{
+	z-index: 0;
+}
+.headerdiv{
+	z-index: 3;
+	position:absolute;
+	width: 50%;
+	margin: 0 25%;
+}
+.whitetext{
+	color:#eee;
+}
+.center{
+	text-align: center;
+}
+.button:hover{
+	cursor: pointer;
+}
+	.maintitle,#maincitytitle{
+		text-align: center;
+		font-size: 50px;
+		margin: 10px 0 30px 0;
+		border-bottom: 1px solid;
+		padding-bottom: 25px;
+	}
+	.maintitle{
+		font-size: 70px;
+		margin: 120px 0 60px 0;
+	}
+
+	.searchbardiv{
+		display: block;
+		text-align: center;
+	}
+		.subsearchbardiv{
+			position: absolute;
+			top: 40px;
+			right: 10px;
+		}
+		.mainsearch,.searchbutton{
+			display: inline-block;
+			font-size: 30px;
+			padding: 8px;
+			background-color: rgba(1,1,1,0.5);
+			color:white;
+			border: none;
+		}
+		.imgclick:hover{
+			cursor: pointer;
+		}
+		#backbutton{
+			height:55px;
+			margin:20px 0;
+		}
+
+#resultspage{
+	position: absolute;
+	top:0;
+	z-index: 1;
+}
+	#toolbar{
+		position:absolute;
+	}
+	#searchbackgroundimg,#homebackgroundimg{
+		position:relative;
+		width: 106%;
+		top: -10px;
+		left: -3%;
+		-webkit-filter: blur(5px);
+		  -moz-filter: blur(5px);
+		  -o-filter: blur(5px);
+		  -ms-filter: blur(5px);
+		  filter: blur(5px);
+	}
+		.backgroundimgdarkener{
+			background-color: black;
+			opacity: 0.5;
+			height: 100%;
+			width: 100%;
+			position: absolute;
+			z-index: 1;
+		}
+
+	.container{
+		position: absolute;
+		top:0;
+		width: 95%;
+		margin: 0 2.5%;
+		z-index: 2;
+	}
+		.darktile{
+			background-color: rgba(1,1,1,0.4);
+			margin: 8px;
+			padding: 8px;
+			height: 400px;
+		}
+		.inshadow{
+			box-shadow: ;
+		}
+		.icon{
+			font-size: 55px;
+			margin-top: 20px;
+		}
+		.shorticon{
+			margin-top: 10px;
+		}
+		.headericon{
+			font-size: 60px;
+			margin: 10px 0;
+		}
+		#thingstodo,#popularsearches,#longtermweather{
+			overflow-x: auto;
+			white-space: nowrap;
+		}
+		#longtermweather{
+			margin-top: 20px;
+		}
+		.popularsearchesdiv{
+			position:absolute;
+			top: 400px;
+			z-index: 3;
+		}
+			.thingtodo,.weatherelement{
+				display: inline-block;
+			    overflow: hidden;
+			    text-overflow: ellipsis;
+			    -o-text-overflow: ellipsis;
+			    white-space: nowrap;
+			    width: 350px;
+			    margin: 10px 10px 0;
+			    text-align: center;
+			}
+			.weatherelement{
+				width: auto;
+			}
+				.thingtodo img{
+					height: 250px;
+				}
+
+
+
+

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href='http://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/weather-icons.min.css">
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+		<meta charset="UTF-8">
+		<title>City Search</title>
+	</head>
+	<body>
+		<div id='homepage'>
+			<div class='headerdiv'>
+				<h1 class='maintitle whitetext'><span style='font-weight:bold'>DOWN</span>TOWN</h1>
+				<div class='searchbardiv'>
+					<input placeholder='Search' class='mainsearch whitetext' type='text'>
+					<button class='searchbutton button whitetext' type='button'>Go</button>
+				</div>
+			</div>
+			<div class='darktile col3 popularsearchesdiv'>
+				<h2 class='whitetext center'>Popular searches</h2>
+				<ul style='margin-right:22px' id='popularsearches'></ul>
+			</div>
+			<div>
+				<div class='backgroundimgdarkener'></div>
+				<img id='homebackgroundimg' src='img/san fransisco.jpg'>
+			</div>
+		</div>
+		<div id='resultspage' style='opacity:0'>
+			<div id='toolbar'>
+
+			</div>
+			<div>
+				<div class='backgroundimgdarkener'></div>
+				<img id='searchbackgroundimg'>
+			</div>
+			<div class='container'>
+				<img id='backbutton' class='button' src='img/icons/back_arrow-01.svg'>
+				<div style='width:95%;display:inline-block'>
+					<h1 class='whitetext' id='maincitytitle'></h1>
+					<div class='searchbardiv subsearchbardiv'>
+						<input placeholder='Search' class='mainsearch whitetext' type='text'>
+						<button class='searchbutton button whitetext' type='button'>Go</button>
+					</div>
+				</div>
+				<div class='darktile col1'>
+					<i class="whitetext icon wi wi-umbrella"></i>
+					<h2 class='whitetext'>Weather</h2>
+					<div class='col21'>
+						<i class="whitetext icon wi wi-thermometer"></i>
+						<h3 class='whitetext' id='temp'></h3>
+					</div>
+					<div class='col21'>
+						<i class="whitetext icon wi wi-thermometer"></i>
+						<h3 class='whitetext' id='weather'></h3>
+					</div>
+					<div class='col3'>
+						<ul id='longtermweather'></ul>
+					</div>
+				</div>
+				<div class='darktile col2'>
+					<div id='mapdiv'></div>
+				</div>
+				<div class='darktile col1'>
+					<i class='whitetext headericon fa fa-map'></i>
+					<h2 class='whitetext'>Distance</h2>
+					<div class='col21'>
+						<i class="whitetext icon wi wi-time-3"></i>
+						<h3 class='whitetext' id='timedifference'></h3>
+					</div>
+					<div class='col21'>
+						<i class="whitetext icon fa fa-road"></i>
+						<h3 class='whitetext' id='distance'></h3>
+					</div>
+					<i class="whitetext icon fa fa-plane"></i>
+					<h3 class='whitetext' id='timetofly'></h3>
+				</div>
+				<div class='darktile col3'>
+					<h3 class='whitetext'><span id='numthingstodo'></span> things to do</h3><img src='img/mappin.png'>
+					<ul id='thingstodo' class='inshadow'></ul>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src='js/jquery-1.11.3.min.js'></script>
+	<script src='js/jquery-ui.min.js'></script>
+	<script src='js/papaparse.min.js'></script>
+	<script src='js/moment.js'></script>
+	<script src='js/index.js'></script>
+</html>
