@@ -7,12 +7,12 @@
 		<link rel="stylesheet" type="text/css" href="css/index.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
 		<meta charset="UTF-8">
-		<title>City Search</title>
+		<title>Downtown</title>
 	</head>
 	<body>
 		<div id='homepage'>
 			<div class='headerdiv'>
-				<h1 class='maintitle whitetext'><span style='font-weight:bold'>DOWN</span>TOWN</h1>
+				<h1 class='maintitle whitetext'><span style='font-weight:bold'> DOWN</span>TOWN</h1>
 				<div class='searchbardiv'>
 					<input placeholder='Search' class='mainsearch whitetext' type='text'>
 					<button class='searchbutton button whitetext' type='button'>Go</button>
@@ -51,30 +51,64 @@
 						<i class="whitetext icon wi wi-thermometer"></i>
 						<h3 class='whitetext' id='temp'></h3>
 					</div>
-					<div class='col21'>
-						<i class="whitetext icon wi wi-thermometer"></i>
-						<h3 class='whitetext' id='weather'></h3>
+					<div id='weather' class='col21'>
 					</div>
 					<div class='col3'>
 						<ul id='longtermweather'></ul>
 					</div>
 				</div>
 				<div class='darktile col2'>
-					<div id='mapdiv'></div>
+					<div class='col21'>
+						<div class='circle'>
+							<h1 id='grade' class='whitetext'></h1>
+						</div>
+					</div>
+					<div class='col21'>
+						<div id='grapharea'></div>
+					</div>
 				</div>
 				<div class='darktile col1'>
-					<i class='whitetext headericon fa fa-map'></i>
-					<h2 class='whitetext'>Distance</h2>
+					<i class='whitetext headericon fa fa-info-circle'></i>
+					<h2 class='whitetext'>Facts</h2>
+					<div class='col21'>
+						<i class="whitetext icon fa fa-map"></i>
+						<h3 class='whitetext' id='timedifference'></h3>
+					</div>
 					<div class='col21'>
 						<i class="whitetext icon wi wi-time-3"></i>
-						<h3 class='whitetext' id='timedifference'></h3>
+						<h3 class='whitetext' id='time'></h3>
 					</div>
 					<div class='col21'>
 						<i class="whitetext icon fa fa-road"></i>
 						<h3 class='whitetext' id='distance'></h3>
 					</div>
-					<i class="whitetext icon fa fa-plane"></i>
-					<h3 class='whitetext' id='timetofly'></h3>
+					<div class='col21'>
+						<i class="whitetext icon fa fa-plane"></i>
+						<h3 class='whitetext' id='timetofly'></h3>
+					</div>
+				</div>
+				<div class='darktile col1'>
+					<div id='mapdiv'></div>
+				</div>
+				<div class='darktile col1'>
+					<i class='whitetext headericon fa fa-database'></i>
+					<h2 class='whitetext'>Data</h2>
+					<div class='col21'>
+						<i class="whitetext icon fa fa-coffee"></i>
+						<h3 class='whitetext' id='costofcoffee'></h3>
+					</div>
+					<div class='col21'>
+						<i class="whitetext icon fa fa-usd"></i>
+						<h3 class='whitetext' id='costofliving'></h3>
+					</div>
+					<div class='col21'>
+						<i class="whitetext icon fa fa-industry"></i>
+						<h3 class='whitetext' id='pollutionlevel'></h3>
+					</div>
+					<div class='col21'>
+						<i class="whitetext icon fa fa-user-secret"></i>
+						<h3 class='whitetext' id='crimeindex'></h3>
+					</div>
 				</div>
 				<div class='darktile col3'>
 					<h3 class='whitetext'><span id='numthingstodo'></span> things to do</h3>
@@ -87,5 +121,6 @@
 	<script src='js/jquery-ui.min.js'></script>
 	<script src='js/papaparse.min.js'></script>
 	<script src='js/moment.js'></script>
+	<script src="https://www.google.com/jsapi"></script>
 	<script src='js/index.js'></script>
 </html>

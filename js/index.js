@@ -30,7 +30,10 @@ $(document).ready(function(){
 	var pollutionLevel,minPolLvl,maxPolLvl,
 		livingCost,minLivingCost,maxLivingCost,
 		coffeeCost,minCoffeeCost,maxCoffeeCost,
-		crimeIndex,minCrimeIndex,maxCrimeIndex;
+		crimeIndex,minCrimeIndex,maxCrimeIndex,
+		tempRating,totalTempScore=0,avgTempScore,avgWeatherScore,
+		finalRating,
+		finalGrade;
 
 	$('window').scrollTop(0);
 	$('.mainsearch').autocomplete({source: cities});
@@ -77,43 +80,61 @@ $(document).ready(function(){
 		$.getJSON('http://api.openweathermap.org/data/2.5/weather?' + cityInfo[selectedCity][0],function(data){
 			$('#maincitytitle').html(data.name);
 			var temp = Math.round((data.main.temp - 273) * 10 ) / 10;
+			
 			$('#temp').html(temp.toFixed(1) + '&#8451;');
-			$('#weather').html(data.weather[0].main + ', ' + data.weather[0].description);
+			$('#weather').html("<i class='whitetext icon wi wi-"+getWeatherIcon(data.weather[0].main)+"'></i><h3 class='whitetext'>"+data.weather[0].main+", "+data.weather[0].description+"</h3>");
 		})
 		$.getJSON('http://api.openweathermap.org/data/2.5/forecast/daily?' + cityInfo[selectedCity][0] + '&mode=json&units=metric&cnt=15',function(data){
 			var days = data.list,
 				longTermWeather = $('#longtermweather'),
 				totalTemp,
-				totalWeatherScore = 0,
-				avgWeatherScore;
+				totalWeatherScore = 0;
 
 			days.forEach(function(x,i,y){
 				totalWeatherScore += weatherScore[x.weather[0].main];
 				var date = moment().add(i,'days')._d
 				date = date.toString().substr(8,2);
-				var weatherIcon;
-				switch(x.weather[0].main){
-					case 'Clear':
-						weatherIcon = 'day-sunny';
-						break;
-					case 'Clouds':
-						weatherIcon = 'cloudy';
-						break;
-					case 'Rain':
-						weatherIcon = 'rain';
-						break;
-				}
+				var weatherIcon = getWeatherIcon(x.weather[0].main);
+				totalTempScore += x.temp.day;
 				if(i<7) longTermWeather.append('<li class="weatherelement"><h3 class="whitetext">'+ date +'</h3><i class="whitetext icon shorticon wi wi-'+ weatherIcon +'"></i><h3 class="whitetext">'+ x.weather[0].main +'</h3></li>')
 			})
-
 			avgWeatherScore = totalWeatherScore/days.length;
+			avgTempScore = totalTempScore/days.length;
+			if(avgTempScore<10){
+				tempRating = 5;
+			}else if(avgTempScore<15){
+				tempRating = 4;
+			}else if(avgTempScore<20){
+				tempRating = 3;
+			}else if(avgTempScore<25){
+				tempRating = 2;
+			}else if(avgTempScore<30){
+				tempRating = 1;
+			}else{
+				tempRating = 0;
+			}
+			console.log(avgWeatherScore);
 		})
 	
-
+		function getWeatherIcon(s){
+			switch(s){
+				case 'Clear':
+					return 'day-sunny';
+					break;
+				case 'Clouds':
+					return 'cloudy';
+					break;
+				case 'Rain':
+					return 'rain';
+					break;
+			}
+		}
 		// GOOGLE TIMEZONE API
 		$.getJSON('https://maps.googleapis.com/maps/api/timezone/json?location='+ cityInfo[selectedCity][1] +','+cityInfo[selectedCity][2]+'&timestamp=1331766000&key=AIzaSyCedH44_tck-gnH5TzEAC99Wt1rXHvYNc4',function(data){
 			var timeDifferenceInSeconds = data.rawOffset;
 			var rawTimeDifference = timeDifferenceInSeconds/3600;
+			var time = moment().add(rawTimeDifference,'hours');
+		//	console.log(moment().add(rawTimeDifference,'hours'));
 			var timeDifference = rawTimeDifference % 1 == 0 ? rawTimeDifference + ':00' : rawTimeDifference + ':30';
 			$('#timedifference').html(timeDifference);
 		})
@@ -159,9 +180,9 @@ $(document).ready(function(){
 
 
 		// CRIME DATA API
-		$.getJSON('https://data.police.uk/api/crimes-no-location?category=all-crime&force=warwickshire',function(data){
-		//	console.log(data)
-		})
+		// $.getJSON('https://data.police.uk/api/crimes-no-location?category=all-crime&force=warwickshire',function(data){
+		// 	console.log(data)
+		// })
 		// THINGS TO DO API
 		$.getJSON('http://terminal2.expedia.com:80/x/activities/search?location=' + deSpacedCity + '&apikey=E7AezhbGouTnaQEROzQ9AzuniDLbjiGn',function(data){
 			var priceInGbp,
@@ -251,6 +272,8 @@ $(document).ready(function(){
 				coffeeCostRange = maxCoffeeCost- minCoffeeCost,
 				crimeIndexRange = maxCrimeIndex- minCrimeIndex;
 
+			$('#costofcoffee').html('£'+ parseFloat(coffeeCost).toFixed(2));
+
 			pollutionLevel -= minPolLvl;
 			livingCost -= minLivingCost;
 			coffeeCost -= minCoffeeCost;
@@ -261,7 +284,90 @@ $(document).ready(function(){
 				coffeeCostRating = (coffeeCost/coffeeCostRange)* 5,
 				crimeIndexRating = (crimeIndex/crimeIndexRange)* 5;
 
-				console.log(polLvlRating);
+			finalRating = (polLvlRating+livingCostRating+coffeeCostRating+crimeIndexRating+tempRating+avgWeatherScore)/6;
+
+			$('#costofliving').html((livingCostRating*20).toFixed(2));
+			$('#pollutionlevel').html((polLvlRating*20).toFixed(2))
+			$('#crimeindex').html((crimeIndexRating*20).toFixed(2))
+
+		/*	console.log(polLvlRating)
+			console.log(livingCostRating)
+			console.log(coffeeCostRating)
+			console.log(crimeIndexRating)
+			console.log(tempRating)
+			console.log(avgWeatherScore) */
+			getGrade(finalRating);
+
+			// Load the Visualization API and the piechart package.
+			setTimeout(function(){google.load('visualization', '1', {'callback':'alert("2 sec wait")', 'packages':['corechart']})}, 2000);
+    //  google.load('visualization', '1.0', {'packages':['corechart']});
+
+		      // Set a callback to run when the Google Visualization API is loaded.
+		      google.setOnLoadCallback(function(){
+		      	console.log('google loaded');
+
+		      });
+
+		      // Callback that creates and populates a data table,
+		      // instantiates the pie chart, passes in the data and
+		      // draws it.
+		      function drawChart() {
+
+		        // Create the data table.
+		        var data = new google.visualization.DataTable();
+		        data.addColumn('string', 'Data');
+		        data.addColumn('number', 'Value');
+		        data.addRows([
+		          // ['Pollution', polLvlRating],
+		          // ['Cost of living', livingCostRating],
+		          // ['Crime', crimeIndexRating],
+		          // ['Weather', avgWeatherScore],
+		          // ['Temperature', tempRating]
+		          ['Pollution', 1],
+		          ['Cost of living', 2],
+		          ['Crime', 3],
+		          ['Weather', 4],
+		          ['Temperature', 3]
+
+		        ]);
+
+		        // Set chart options
+		        var options = {'title':'How Much Pizza I Ate Last Night',
+		                       'width':400,
+		                       'height':300};
+
+		        // Instantiate and draw our chart, passing in some options.
+		        var chart = new google.visualization.PieChart(document.getElementById('grapharea'));
+		        chart.draw(data, options);
+		      } 
+		}
+
+		function getGrade(rating){
+			if(rating<1){
+				finalGrade = 'A+'
+			}else if(rating<1.5){
+				finalGrade = 'A'
+			}else if(rating<2){
+				finalGrade = 'A-'
+			}else if(rating<2.25){
+				finalGrade = 'B+'
+			}else if(rating<2.5){
+				finalGrade = 'B'
+			}else if(rating<2.75){
+				finalGrade = 'B-'
+			}else if(rating<3){
+				finalGrade = 'C+'
+			}else if(rating<3.5){
+				finalGrade = 'C'
+			}else if(rating<4){
+				finalGrade = 'C-'
+			}else if(rating<4.5){
+				finalGrade = 'D+'
+			}else if(rating<5){
+				finalGrade = 'D'
+			}
+			console.log(finalGrade);
+			$('#grade').html(finalGrade);
 		}
 	}
 
@@ -270,6 +376,9 @@ $(document).ready(function(){
 		$('#resultspage').animate({opacity:0},function(){
 			$('#homepage').animate({opacity:1});
 		});
+
+		totalWeatherScore = 0;
+		totalTempScore=0;
 
 		$('#resultspage').attr('z-index',-1);
 		$('#backgroundimgdarkener').attr('z-index',-2);

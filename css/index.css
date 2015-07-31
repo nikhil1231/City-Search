@@ -41,7 +41,7 @@ body:after,ul:after{
 }
 
 .col1{
-	width: 32%;
+	width: 30%;
 }
 .col2{
 	width: 63%;
@@ -85,7 +85,12 @@ body:after,ul:after{
 		font-size: 70px;
 		margin: 120px 0 60px 0;
 	}
-
+	#grade{
+		font-size: 100px;
+	    position: absolute;
+	    top: 28%;
+	    left: 29%;
+	}
 	.searchbardiv{
 		display: block;
 		text-align: center;
@@ -148,7 +153,7 @@ body:after,ul:after{
 	}
 		.darktile{
 			background-color: rgba(1,1,1,0.4);
-			margin: 8px;
+			margin: 1%;
 			padding: 8px;
 			height: 400px;
 		}
@@ -177,6 +182,14 @@ body:after,ul:after{
 			position:absolute;
 			top: 400px;
 			z-index: 3;
+		}
+		.circle{
+			width: 290px;
+		    height: 290px;
+		    border: 1px solid white;
+		    border-radius: 100%;
+		    position: relative;
+		    margin: 50px auto;
 		}
 			.thingtodo,.weatherelement{
 				display: inline-block;
