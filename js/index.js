@@ -27,10 +27,10 @@ $(document).ready(function(){
 		currentMonth = today.getMonth();
 	var numThingsToDo;
 	var dollarToPound;
-	var pollutionLevel,
-		livingCost,
-		coffeeCost,
-		crimeIndex;
+	var pollutionLevel,minPolLvl,maxPolLvl,
+		livingCost,minLivingCost,maxLivingCost,
+		coffeeCost,minCoffeeCost,maxCoffeeCost,
+		crimeIndex,minCrimeIndex,maxCrimeIndex;
 
 	$('window').scrollTop(0);
 	$('.mainsearch').autocomplete({source: cities});
@@ -38,7 +38,7 @@ $(document).ready(function(){
 	var popularSearches = $('#popularsearches')
 
 	cities.forEach(function(x,i,y){
-		var z = x.replace(' ','+')
+		var z = x.replace(' ','+');
 		popularSearches.append('<li class="thingtodo"><img class="imgclick" id="'+ z +'"  src="img/'+ x +'.jpg"><br><p class="whitetext">'+ x + '</p></li>')
 	})
 
@@ -46,7 +46,7 @@ $(document).ready(function(){
 	window.onscroll = function() {
 	    var posY = (document.documentElement.scrollTop) ? document.documentElement.scrollTop : window.pageYOffset;
 	    var imgOffset = posY * 0.7;
-	    $('#searchbackgroundimg').css({'top':imgOffset + 'px'})
+	    $('#searchbackgroundimg').css({'top':imgOffset-10 + 'px'})
 	    $('.backgroundimgdarkener').css({'top':posY + 'px'})
 
 	    if(posY > 50){
@@ -81,7 +81,6 @@ $(document).ready(function(){
 			$('#weather').html(data.weather[0].main + ', ' + data.weather[0].description);
 		})
 		$.getJSON('http://api.openweathermap.org/data/2.5/forecast/daily?' + cityInfo[selectedCity][0] + '&mode=json&units=metric&cnt=15',function(data){
-			console.log(data);
 			var days = data.list,
 				longTermWeather = $('#longtermweather'),
 				totalTemp,
@@ -92,11 +91,22 @@ $(document).ready(function(){
 				totalWeatherScore += weatherScore[x.weather[0].main];
 				var date = moment().add(i,'days')._d
 				date = date.toString().substr(8,2);
-				if(i<7) longTermWeather.append('<li class="weatherelement"><h3 class="whitetext">'+ date +'</h3><i class="whitetext icon shorticon wi wi-cloudy"></i><h3 class="whitetext">'+ x.weather[0].main +'</h3></li>')
+				var weatherIcon;
+				switch(x.weather[0].main){
+					case 'Clear':
+						weatherIcon = 'day-sunny';
+						break;
+					case 'Clouds':
+						weatherIcon = 'cloudy';
+						break;
+					case 'Rain':
+						weatherIcon = 'rain';
+						break;
+				}
+				if(i<7) longTermWeather.append('<li class="weatherelement"><h3 class="whitetext">'+ date +'</h3><i class="whitetext icon shorticon wi wi-'+ weatherIcon +'"></i><h3 class="whitetext">'+ x.weather[0].main +'</h3></li>')
 			})
 
 			avgWeatherScore = totalWeatherScore/days.length;
-			console.log(avgWeatherScore);
 		})
 	
 
@@ -106,7 +116,6 @@ $(document).ready(function(){
 			var rawTimeDifference = timeDifferenceInSeconds/3600;
 			var timeDifference = rawTimeDifference % 1 == 0 ? rawTimeDifference + ':00' : rawTimeDifference + ':30';
 			$('#timedifference').html(timeDifference);
-			console.log(data);
 		})
 
 		// DISTANCE ALGORITHM (HAVERSINE FORMULA)
@@ -155,7 +164,6 @@ $(document).ready(function(){
 		})
 		// THINGS TO DO API
 		$.getJSON('http://terminal2.expedia.com:80/x/activities/search?location=' + deSpacedCity + '&apikey=E7AezhbGouTnaQEROzQ9AzuniDLbjiGn',function(data){
-			console.log(data);
 			var priceInGbp,
 				thingsToDoDiv = $('#thingstodo');
 			numThingsToDo = data.activities.length;
@@ -178,32 +186,83 @@ $(document).ready(function(){
 					var thisData = data.data[i],
 						csvTown = thisData[3];
 
-					if(csvTown.indexOf(selectedCity) !== -1) {
+					cities.forEach(function(x,i){
+						if(csvTown.indexOf(x) !== -1 && csvTown.indexOf('Norwich')==-1 && csvTown.indexOf('Hoover')==-1){
+							if(i==1){
+								minPolLvl = thisData[4]
+								maxPolLvl = thisData[4]
+							}else if(i>1){
+								if(thisData[4]<minPolLvl)minPolLvl=thisData[4];
+								if(thisData[4]>maxPolLvl)maxPolLvl=thisData[4];
+							}
+						}
+					})
+					if(csvTown.indexOf(selectedCity) !== -1 && csvTown.indexOf('Norwich')==-1 && csvTown.indexOf('Hoover')==-1) {
 						pollutionLevel = thisData[4];
-						break;
 					}
 				}
+				parseCityData();
 			}
 		});
 
 		// PARSE OTHER CITY DATA
-		Papa.parse('/data/cityData.csv', {
-			download: true,
-			complete: function(data) {
-				for(var i=0; i<data.data.length;i++){
-					var thisData = data.data[i],
-						csvTown = thisData[0];
-					if(csvTown == selectedCity) {
-						livingCost = thisData[1];
-						coffeeCost = thisData[2];
-						crimeIndex = thisData[3];
-						break;
+		function parseCityData(){
+			Papa.parse('/data/cityData.csv', {
+				download: true,
+				complete: function(data) {
+					for(var i=0; i<data.data.length;i++){
+						var thisData = data.data[i],
+							csvTown = thisData[0];
+
+						if(i==1){
+							// set base values
+							minLivingCost = thisData[1];
+							maxLivingCost = thisData[1];
+							minCoffeeCost = thisData[2];
+							maxCoffeeCost = thisData[2];
+							minCrimeIndex = thisData[3];
+							maxCrimeIndex = thisData[3];
+						}else if(i>1){
+							// finding maxes and mins
+							var tempLivingCost = parseFloat(thisData[1]);
+							if(tempLivingCost<minLivingCost)minLivingCost=tempLivingCost;
+							if(tempLivingCost>maxLivingCost)maxLivingCost=tempLivingCost;
+							if(thisData[2]<minCoffeeCost)minCoffeeCost=thisData[2];
+							if(thisData[2]>maxCoffeeCost)maxCoffeeCost=thisData[2];
+							if(thisData[3]<minCrimeIndex)minCrimeIndex=thisData[3];
+							if(thisData[3]>maxCrimeIndex)maxCrimeIndex=thisData[3];
+						}
+
+						if(csvTown == selectedCity) {
+							livingCost = thisData[1];
+							coffeeCost = thisData[2];
+							crimeIndex = thisData[3];
+							
+						}
 					}
-				}
-			} 
-		});
+					getRating();
+				} 
+			});
+		}
+		// RATING ALGORITHM
+		function getRating(){
+			var polLvlRange = maxPolLvl- minPolLvl,
+				livingCostRange = maxLivingCost- minLivingCost,
+				coffeeCostRange = maxCoffeeCost- minCoffeeCost,
+				crimeIndexRange = maxCrimeIndex- minCrimeIndex;
 
+			pollutionLevel -= minPolLvl;
+			livingCost -= minLivingCost;
+			coffeeCost -= minCoffeeCost;
+			crimeIndex -= minCrimeIndex;
 
+			var polLvlRating = (pollutionLevel/polLvlRange)* 5,
+				livingCostRating = (livingCost/livingCostRange)* 5,
+				coffeeCostRating = (coffeeCost/coffeeCostRange)* 5,
+				crimeIndexRating = (crimeIndex/crimeIndexRange)* 5;
+
+				console.log(polLvlRating);
+		}
 	}
 
 	// CLEAR ALL FIELDS ON BACK BUTTON PRESS
